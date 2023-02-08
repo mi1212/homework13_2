@@ -38,7 +38,8 @@ final class ProfileHeaderViewCell: UICollectionViewCell {
     private let infoStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.distribution = .equalCentering
+        stack.spacing = 4
+        stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -162,7 +163,7 @@ final class ProfileHeaderViewCell: UICollectionViewCell {
             label.text = text
             
             label.textColor = .white
-            label.adjustsFontSizeToFitWidth
+            label.adjustsFontSizeToFitWidth = true
             label.font = UIFont.preferredFont(forTextStyle: .body)
             
             infoStack.addArrangedSubview(label)

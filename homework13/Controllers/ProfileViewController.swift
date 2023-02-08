@@ -9,6 +9,8 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
+    private var refresherControl = UIRefreshControl()
+    
     private let profileCollectionView: UICollectionView = {
         let flow = UICollectionViewFlowLayout()
         flow.scrollDirection = .vertical
@@ -27,6 +29,7 @@ final class ProfileViewController: UIViewController {
         setupProperts()
         setupLayout()
         setupNavigationBar()
+        setupRefresh()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -69,6 +72,19 @@ final class ProfileViewController: UIViewController {
         let dotsButtonItem = UIBarButtonItem(title: "...", style: .plain, target: nil, action: nil)
         
         navigationItem.rightBarButtonItem = dotsButtonItem
+    }
+    
+    private func setupRefresh() {
+        self.refresherControl.tintColor = .systemTeal
+        self.profileCollectionView.alwaysBounceVertical = true
+        self.refresherControl.addTarget(self, action: #selector(loadData), for: .valueChanged)
+        self.profileCollectionView.addSubview(refresherControl)
+    }
+    
+    @objc func loadData() {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { _ in
+            self.refresherControl.endRefreshing()
+        }
     }
     
 }
