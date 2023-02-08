@@ -22,7 +22,6 @@ class StoriesCollectionViewCell: UICollectionViewCell {
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = .systemGray
         label.numberOfLines = 1
-//        label.backgroundColor = .systemGreen
         label.text = "officiallymcconaughey"
         return label
     }()

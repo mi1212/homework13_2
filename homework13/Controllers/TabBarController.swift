@@ -35,7 +35,7 @@ final class TabBarController: UITabBarController {
         setupTabBar(viewController: ViewController(), image: "magnifyingglass"),
         setupTabBar(viewController: ViewController(), image: "plus.app"),
         setupTabBar(viewController: ViewController(), image: "suit.heart"),
-        setupTabBar(viewController: ViewController(), image: "person.crop.circle"),
+        setupTabBar(viewController: ProfileViewController(), image: "person.crop.circle"),
         ]
         self.viewControllers = vcArray
     }
