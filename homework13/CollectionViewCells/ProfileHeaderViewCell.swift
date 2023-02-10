@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol ProfileHeaderViewCellDelegate: AnyObject {
+    func tapImage()
+}
+
 final class ProfileHeaderViewCell: UICollectionViewCell {
 
+    weak var delegate: ProfileHeaderViewCellDelegate?
+    
     private let infoArray = [
     "Matthew McConaughey",
     "Деятель искусства",
@@ -22,6 +28,7 @@ final class ProfileHeaderViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "avatar")
         imageView.clipsToBounds = true
+        imageView.isUserInteractionEnabled = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -81,7 +88,7 @@ final class ProfileHeaderViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupProperts()
+        setupTapGestureRecognizerToImage()
         setupLayout()
         setupInfoStack()
         setupStatisticStack()
@@ -97,7 +104,13 @@ final class ProfileHeaderViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupProperts() {
+    private func setupTapGestureRecognizerToImage() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapImage))
+        profileImageView.addGestureRecognizer(tap)
+    }
+    
+    @objc private func tapImage() {
+        delegate?.tapImage()
     }
     
     private func setupLayout() {

@@ -23,7 +23,7 @@ final class ProfileViewController: UIViewController {
         collection.backgroundColor = .clear
         return collection
     }()
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupProperts()
@@ -87,6 +87,96 @@ final class ProfileViewController: UIViewController {
         }
     }
     
+    private func startStories() {
+        
+        let storiesImageView: UIImageView = {
+            let imageView = UIImageView()
+            imageView.contentMode = .scaleAspectFill
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            return imageView
+        }()
+        
+        let blurEffectView: UIVisualEffectView = {
+            let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
+            let blurEffectView = UIVisualEffectView(effect: blurEffect)
+            blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+            return blurEffectView
+        }()
+        
+        let progressView: UIProgressView = {
+            let progress = UIProgressView()
+            progress.setProgress(0, animated: true)
+            progress.tintColor = .systemGray
+            progress.progressTintColor = .white
+            progress.clipsToBounds = true
+            progress.layer.cornerRadius = 4
+            progress.translatesAutoresizingMaskIntoConstraints = false
+            return progress
+        }()
+        
+        let activityView: UIActivityIndicatorView = {
+            let activity = UIActivityIndicatorView(style: .large)
+            activity.color = .white
+            activity.translatesAutoresizingMaskIntoConstraints = false
+            return activity
+        }()
+        
+        blurEffectView.frame = view.bounds
+        
+        view.addSubview(blurEffectView)
+        view.addSubview(storiesImageView)
+        view.addSubview(progressView)
+        view.addSubview(activityView)
+        
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Inset.small.rawValue),
+            progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Inset.big.rawValue*3),
+            progressView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Inset.big.rawValue*3),
+            progressView.heightAnchor.constraint(equalToConstant: 4)
+        ])
+        
+        NSLayoutConstraint.activate([
+            activityView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            activityView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityView.heightAnchor.constraint(equalToConstant: 64),
+            activityView.widthAnchor.constraint(equalToConstant: 64),
+        ])
+        
+        NSLayoutConstraint.activate([
+            storiesImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            storiesImageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            storiesImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            storiesImageView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
+        
+        activityView.startAnimating()
+        
+        var activityTimer = Timer()
+        
+        activityTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { _ in
+            activityView.stopAnimating()
+            storiesImageView.image = UIImage(named: "story")
+            activityTimer.invalidate()
+        })
+        
+        var timer = Timer()
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [self] _ in
+            let progress = progressView.progress
+            if progress == 1 {
+                blurEffectView.removeFromSuperview()
+                progressView.removeFromSuperview()
+                storiesImageView.removeFromSuperview()
+                timer.invalidate()
+                activityView.stopAnimating()
+            } else {
+                progressView.setProgress(progress + 0.001, animated: true)
+            }
+            
+        }
+    }
+    
 }
 
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {
@@ -141,8 +231,8 @@ extension ProfileViewController: UICollectionViewDataSource {
         
         switch indexPath.section {
         case 0: // ячейка хидера
-            let cell = profileCollectionView.dequeueReusableCell(withReuseIdentifier: ProfileHeaderViewCell.identifire, for: indexPath)
-            
+            let cell = profileCollectionView.dequeueReusableCell(withReuseIdentifier: ProfileHeaderViewCell.identifire, for: indexPath) as! ProfileHeaderViewCell
+            cell.delegate = self
             return cell
         case 1: // ячейка актульного
             let cell = profileCollectionView.dequeueReusableCell(withReuseIdentifier: ActuallsCollectionViewCell.identifire, for: indexPath)
@@ -161,7 +251,13 @@ extension ProfileViewController: UICollectionViewDataSource {
             
             return cell
         }
-        
-        
     }
+}
+
+extension ProfileViewController: ProfileHeaderViewCellDelegate {
+    
+    func tapImage() {
+        startStories()
+    }
+    
 }
